@@ -242,6 +242,8 @@ def parse_event(raw_event):
                 parsed_event[DATASET_NAME] = affecting.get("name", affecting.get("id"))
             elif affecting.get("entityType") in ("appliedUser", "user"):
                 parsed_event[TARGET_USER] = affecting.get("name", affecting.get("id"))
+            elif affecting.get("entityType") == "file":
+                parsed_event[FILE_NAME] = affecting.get("name")
 
     parsed_event[COMMAND] = parsed_event[COMMAND] or raw_event.get('metadata', {}).get('query')
 
