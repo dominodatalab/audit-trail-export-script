@@ -15,8 +15,8 @@ The script requires the `--hostname` parameter to be passed and either a `--jwt`
 | Argument         | Required | Description                                                            |
 |------------------|----------|------------------------------------------------------------------------|
 | `--hostname`     | Yes      | The hostname to connect to.                                            |
-| `--jwt`          | No*      | The JWT token for authentication.                                      |
-| `--api-key`      | No*      | The Domino API key for authentication.                                 |
+| `--jwt`          | Yes*     | The JWT token for authentication.                                      |
+| `--api-key`      | Yes*     | The Domino API key for authentication.                                 |
 | `--event`        | No       | The event name.                                                        |
 | `--user_name`    | No       | The name of the user performing the export action.                     |
 | `--target_name`  | No       | Object that received the action                                        |
