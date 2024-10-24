@@ -8,7 +8,7 @@ import sys
 #################### AUXILIARY VARIABLES ####################
 
 ENV_FILE = ".env"
-HOSTNAME_ENV = "HOSTNAME"
+HOSTNAME_ENV = "DOMINO_HOSTNAME"
 JWT_ENV = "JWT"
 API_KEY_ENV = "API_KEY"
 
@@ -55,6 +55,9 @@ CSV_HEADERS = [
 
 
 def main():
+    # Load any environment variables defined
+    load_env_file()
+
     parser = argparse.ArgumentParser(description="Script that exports Audit trail events")
 
     parser.add_argument('--hostname',

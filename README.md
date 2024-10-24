@@ -12,7 +12,7 @@ The script requires a `Hostname` and either a `JWT` or an `API-Key` for authenti
 
 Example of the .env file
 ```
-HOSTNAME=<A-DOMINO-INSTANCE>
+DOMINO_HOSTNAME=<A-DOMINO-INSTANCE>
 JWT=<A-JWT>
 API_KEY=<AN-API-KEY>
 ```
@@ -47,7 +47,7 @@ python3 export_audit_trail.py --hostname https://domino_instance.com --jwt my-jw
 
 `.env` definition
 ```
-HOSTNAME=<A-DOMINO-INSTANCE>
+DOMINO_HOSTNAME=<A-DOMINO-INSTANCE>
 JWT=<A-JWT>
 ```
 
