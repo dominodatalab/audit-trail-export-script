@@ -1,3 +1,5 @@
 .DS_Store
 .vscode/
 aux/
+.env
+audit_trail_export_*.csv

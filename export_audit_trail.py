@@ -1,14 +1,21 @@
 import argparse
 import csv
-from datetime import datetime, UTC, timezone
+from datetime import datetime, timezone
+import os
 import requests
 import sys
 
 #################### AUXILIARY VARIABLES ####################
+
+ENV_FILE = ".env"
+HOSTNAME_ENV = "HOSTNAME"
+JWT_ENV = "JWT"
+API_KEY_ENV = "API_KEY"
+
 AUDIT_TRAIL_PATH = "api/audittrail/v1/auditevents"
 BATCH_LIMIT = 1000
 
-CSV_BASE_FILENAME=f"audit_trail_export_{datetime.now().strftime("%Y-%m-%d:%H-%M-%S")}.csv"
+CSV_BASE_FILENAME=f"audit_trail_export_{datetime.now().strftime('%Y-%m-%d:%H-%M-%S')}.csv"
 
 # HEADERS
 UTC_TIMESTAMP = "DATE & TIME (UTC)"
@@ -50,12 +57,17 @@ CSV_HEADERS = [
 def main():
     parser = argparse.ArgumentParser(description="Script that exports Audit trail events")
 
-    # Required parameter
-    parser.add_argument('--hostname', required=True, help="Hostname (required)")
+    parser.add_argument('--hostname',
+                        help="Hostname. Can be defined in an .env file as HOSTNAME=your-hostname",
+                        default=os.environ.get(HOSTNAME_ENV))
+    parser.add_argument('--jwt',
+                        help="JWT token. Can be defined in an .env file as JWT=your-jwt",
+                        default=os.environ.get(JWT_ENV))
+    parser.add_argument('--api-key',
+                        help="API-Key. Can be defined in an .env file as API_KEY=your-api-key",
+                        default=os.environ.get(API_KEY_ENV))
 
-    # Optional parameters
-    parser.add_argument('--jwt', help="JWT token")
-    parser.add_argument('--api-key', help="API-Key")
+    # Arguments for the filters
     parser.add_argument('--event', help="Event name")
     parser.add_argument('--user_name', dest='actorName', help="User name that performed the action")
     parser.add_argument('--target_name', dest='targetName', help="Object that received the action")
@@ -67,8 +79,8 @@ def main():
 
     print("Exporting Audit trail events using the following arguments:")
     print(f"- Hostname: {args.hostname}")
-    print(f"- JWT: {"*****" if args.jwt else '-'}")
-    print(f"- API Key: {"*****" if args.api_key else '-'}")
+    print(f"- JWT: {'*****' if args.jwt else '-'}")
+    print(f"- API Key: {'*****' if args.api_key else '-'}")
     print(f"- Start Date & Time: {args.startTimestamp or '-'}")
     print(f"- End Date & Time: {args.endTimestamp or '-'}")
     print(f"- Event: {args.event or '-'}")
@@ -77,6 +89,10 @@ def main():
     print(f"- Project Name: {args.withinProjectName or '-'}")
 
     # Validations and clean-up
+    if not args.hostname:
+        print("Error: You must provide the hostname.")
+        sys.exit(1)
+
     # Ensure either jwt or api-key is provided
     if not args.jwt and not args.api_key:
         print("Error: You must provide either a JWT token or an API key.")
@@ -98,6 +114,18 @@ def main():
 
     # Run the export
     export_audit_trail(args.hostname, request_headers, request_params)
+
+
+def load_env_file():
+    try:
+        with open(ENV_FILE) as f:
+            # Use a generator to process lines and filter comments and empty lines
+            env_vars = (line.strip().split('=', 1) for line in f if line.strip() and not line.startswith('#'))
+            # Set environment variables
+            for key, value in env_vars:
+                os.environ[key] = value
+    except FileNotFoundError:
+        print(f"No {ENV_FILE} file found. Skipping loading environment variables")
 
 
 def validate_and_format_timestamp(raw_timestamp):
@@ -196,7 +224,7 @@ def parse_event(raw_event):
         COMMAND: None,
     }
 
-    parsed_event[UTC_TIMESTAMP] = datetime.fromtimestamp(raw_event['timestamp'] / 1000, UTC).strftime('%Y-%m-%d %H:%M:%S')
+    parsed_event[UTC_TIMESTAMP] = datetime.fromtimestamp(raw_event['timestamp'] / 1000, timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
     actor_data = raw_event.get('actor', {})
     parsed_event[USER_NAME] = actor_data.get('name', actor_data.get('id'))
