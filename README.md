@@ -6,6 +6,8 @@ It takes several parameters to customize the filter of the export process, inclu
 
 The output is a CSV file containing all the events that matched the query
 
+> Note: You can upload the script into a **Domino Project** and run it as a **Job**
+
 ## Usage
 
 The script requires a `Hostname` and either a `JWT` or an `API-Key` for authentication. They can be provided as arguments or can be defined in a `.env` file to be loaded
