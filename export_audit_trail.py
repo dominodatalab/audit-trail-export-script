@@ -296,8 +296,8 @@ def flatten_target(target_raw):
         target_data["before"] = target.get("before")
         target_data["after"] = target.get("after")
         target_data["unit"] = target.get("unit")
-        target_data["added"] = ','.join([obj.get("name") for obj in target.get("added", [])])
-        target_data["removed"] = ','.join([obj.get("name") for obj in target.get("removed", [])])
+        target_data["added"] = ','.join([obj.get("name") or "" for obj in target.get("added", [])])
+        target_data["removed"] = ','.join([obj.get("name")  or "" for obj in target.get("removed", [])])
 
     return target_data
 
