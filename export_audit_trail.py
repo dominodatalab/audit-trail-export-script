@@ -15,7 +15,7 @@ API_KEY_ENV = "API_KEY"
 AUDIT_TRAIL_PATH = "api/audittrail/v1/auditevents"
 BATCH_LIMIT = 1000
 
-CSV_BASE_FILENAME=f"audit_trail_export_{datetime.now().strftime('%Y-%m-%d:%H-%M-%S')}.csv"
+CSV_BASE_FILENAME=f"audit_trail_export_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
 
 # HEADERS
 UTC_TIMESTAMP = "DATE & TIME (UTC)"
